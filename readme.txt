@@ -1,14 +1,14 @@
 === WP Service Payment Form With Authorize.net ===
 Contributors: shivtiwari
 Donate link:  
-Tags: Wordpress, WooCommerce, e-Commerce
+Tags: Wordpress, WooCommerce, e-Commerce, Captcha
 Requires at least: 3.0.1
-Tested up to: 4.7.3
-Stable tag: 4.3
+Tested up to: 4.8
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards using Authorize.net Gateway.
+WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards using Authorize.net Gateway with captcha.
 
 == Description ==
 
@@ -18,6 +18,8 @@ This allows you to add your own services lists and receive payments.
 
 After a making payment, your customers will be receive invoice from Authorize.net.
 If you will enable send invoice option from your Authorize.net merchant account.
+
+reCAPTCHA protects internet users from spam.
 
 Feature to list all payment in wp admin COMING VERY SOON in next update.
 
@@ -33,6 +35,6 @@ Feature to list all payment in wp admin COMING VERY SOON in next update.
 
 == Changelog ==
 
-** V 1.0 **
+** V 1.0.1 **
 Stable initial release
 
