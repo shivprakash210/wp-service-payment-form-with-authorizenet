@@ -8,7 +8,7 @@
  * Plugin Name:       WP Service Payment Form With Authorize.net
  * Plugin URI:        https://github.com/shivprakash210/wp-service-payment-form-with-authorizenet
  * Description:       WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards using Authorize.net Gateway with captcha.
- * Version:           1.0.1
+ * Version:           1.2
  * Author:            Shiv Prakash Tiwari
  * Author URI:        https://github.com/shivprakash210/
  * License:           GPL-2.0+
@@ -261,21 +261,15 @@ function wpspf_plugin_settings_page() {
 
 
 function wpspf_paymentform(){
-    require_once('recaptchalib.php');
+    if(!isset($_GET['action'])){
 	$publickey = get_option( 'wpspf_sitekey' );
 	$privatekey = get_option( 'wpspf_secretekey' );
 	# the response from reCAPTCHA
 	$resp = null;
-	# the error code from reCAPTCHA, if any
-	$cap_error = null;
-	if (isset($_POST["recaptcha_response_field"])) {
-        $resp = recaptcha_check_answer ($privatekey,
-                                        $_SERVER["REMOTE_ADDR"],
-                                        $_POST["recaptcha_challenge_field"],
-                                        $_POST["recaptcha_response_field"]);
-
-        if ($resp->is_valid) { 
-            if(isset($_POST['wpspf_payment']) && wp_verify_nonce($_REQUEST['wpspf_billpay_nonce'], 'wpspf_nonce_billpay_action')){
+    //check for form submit         
+    if(isset($_POST['wpspf_payment']) && wp_verify_nonce($_REQUEST['wpspf_billpay_nonce'], 'wpspf_nonce_billpay_action')){
+        //check for google captcha
+        if(isset($_POST['spGoogleCaptchaRes']) && trim($_POST['spGoogleCaptchaRes'])!='' && wpspf_verify_google_captcha($_POST['spGoogleCaptchaRes'])==true){
                     // Testing, is it a real transaction
                     $environment = ( intval(get_option( 'wpspf_transactionmode' ))==1 ) ? 'TRUE' : 'FALSE';
 
@@ -390,17 +384,14 @@ function wpspf_paymentform(){
                         echo  '<div class="success">Thanks! '.$customername.',  Your payment has been successfully completed for service "'.$servicetype.'"</div>';			
                     } else {
                         // Transaction was not succesful			
-                        echo $error = $r['response_reason_text'];
+                        $error = $r['response_reason_text'];
                         echo  '<div class="error">'.$error.'</div>';
-
                     }
-
-                }
-		} else {
-                # set the error code so that we can display it
-                $cap_error = $resp->error;
-        }
-    }
+                }else{
+                    echo  '<div class="error">Invalid captcha. Please try again.</div>';        
+                } 
+            }                   
+		
 		?>
 		<style>
 			.wc-credit-card-form{ width:100%;}
@@ -415,7 +406,7 @@ function wpspf_paymentform(){
 			}
 	     </style>
 		<div class="payment_box payment_method_authorizenet_lightweight">
-		<form method="post" name="payment" action="">
+		<form method="post" id="wpspf_form" onsubmit="return wpspfCheckGrecaptcha();" name="payment" action="">
 			<h1><?php echo esc_attr( get_option('wpspf_paymentheading') ); ?></h1>
 
 		<table id="wc-authorizenet_lightweight-cc-form" class="wc-credit-card-form wc-payment-form">
@@ -529,21 +520,56 @@ function wpspf_paymentform(){
 		    </tr>
             
             <tr>
-				<td><?php if($cap_error) echo  '<div class="error">'.$cap_error.'</div>'; ?></td>
+				<td><input type="hidden" id="spGoogleCaptchaRes" name="spGoogleCaptchaRes" value="" required="required"></td>
 				<td>
-					<?php echo recaptcha_get_html($publickey, $error); ?>	
+					<div id="spGoogleCaptcha"></div>	
 				</td>
 			</tr>
             
 			<tr><td></td><td style="text-align:right;padding: 10px;">
 				<IMG src="//payments.intuit.com/payments/landing_pages/LB/default.jsp?c=VMAD&l=H&s=2&b=FFFFFF" width="235" height="35" border=0 alt="Credit Card Logos" /> 
 				</td></tr>
-			<tr>	<td></td>		
+			<tr id="wpspf_submit_btn" style="display: none">	<td></td>		
 			<td>
 				<?php wp_nonce_field('wpspf_nonce_billpay_action', 'wpspf_billpay_nonce'); ?>
 				<input type="submit" name="wpspf_payment" class="btn button form-field" value="Pay Your Bill"></td></tr>
 			</table>
 	    </form>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            function wpspfCheckGrecaptcha(){
+                var spGoogleCaptchaRes = jQuery('#spGoogleCaptchaRes').val();
+                if(spGoogleCaptchaRes==''){
+                    return false;
+                }else{
+                    return true;
+                }                
+            }
+      var verifyCallback = function(token) {
+        jQuery('#wpspf_submit_btn').show();
+        jQuery('#spGoogleCaptchaRes').val(token);
+      };
+
+      var expiredCallback = function() {
+        jQuery('#wpspf_submit_btn').hide();
+        var tokenBlank = '';
+        jQuery('#spGoogleCaptchaRes').val(tokenBlank);
+      };
+      
+      var captchaTheme = 'light';
+      var sitekey = '<?php echo $publickey; ?>';
+      var onloadCallback = function() {        
+        grecaptcha.render('spGoogleCaptcha', {
+          'sitekey' : sitekey,
+          'callback' : verifyCallback,
+          'expired-callback' : expiredCallback,
+          'theme' : captchaTheme
+        });
+      };
+    </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script>
 <script>
 	jQuery(document).ready(function(){ 
 		jQuery('#authorizenet_lightweight-card-number').on('keyup', function() {
@@ -567,5 +593,28 @@ function wpspf_paymentform(){
 </div>
 <?php
 }
+}
 add_shortcode('wpspf-paymentform','wpspf_paymentform');
+
+//verify google captcha
+function wpspf_verify_google_captcha($captcha){
+    $secretKey = get_option( 'wpspf_secretekey' );
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    // post request to server
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $data = array('secret' => $secretKey, 'response' => $captcha);
+
+    $options = array(
+      'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+      )
+    );
+    $context  = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+    $responseKeys = json_decode($response,true);
+    return $responseKeys['success'];
+}
 ?>

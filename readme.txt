@@ -3,8 +3,8 @@ Contributors: shivtiwari
 Donate link:  
 Tags: Wordpress, WooCommerce, e-Commerce, Captcha
 Requires at least: 3.0.1
-Tested up to: 4.8
-Stable tag: 1.0.1
+Tested up to: 5.1.1
+Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,6 @@ Feature to list all payment in wp admin COMING VERY SOON in next update.
 
 == Changelog ==
 
-** V 1.0.1 **
+** V 1.0 **
 Stable initial release
 
