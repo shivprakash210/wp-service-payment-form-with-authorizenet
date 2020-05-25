@@ -1,0 +1,35 @@
+.wc-credit-card-form{ width:100%;}
+.form-field{ width: 100%; padding: 5px; }
+.success{ padding: 10px;border: 1px solid rgb(6, 149, 6);color: rgb(24, 180, 24);}
+.error{ padding: 10px;border: 1px solid #ed0a0a;;color: #ed0a0a;;}
+.wc-credit-card-form th {
+        width: 260px;
+ }
+.required {
+    color: #ed0a0a;
+}
+
+/*loader css*/
+.wpspf_loader {
+    border: 5px solid #dcdcdc;
+    border-radius: 50%;
+    border-top: 5px solid #3498db;
+    border-bottom: 5px solid #3498db;
+    width: 30px;
+    height: 30px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  float:left;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.wpspf_loader_text{ float:left; }
