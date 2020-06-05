@@ -1,5 +1,8 @@
 <?php
 if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_nonce_action')){
+        $deprecated = null;
+        $autoload = 'no';
+        
         $wpspfnet_enable        = (!empty($_POST['wpspfnet_enable'])) ? intval($_POST['wpspfnet_enable']) : 0;
         $wpspf_apiloginid       = sanitize_text_field($_POST['wpspf_apiloginid']);
         $wpspf_transactionkey   = sanitize_text_field($_POST['wpspf_transactionkey']);
@@ -12,9 +15,30 @@ if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_n
         $wpspf_secretekey    = trim($_POST['wpspf_secretekey']);
         
         // $wpspfnet_enable_servicetype = (!empty($_POST['wpspfnet_enable_servicetype'])) ? intval($_POST['wpspfnet_enable_servicetype']) : 0;
+
+        //Customer email receipt start
+        $wpspf_x_email_customer  = (!empty($_POST['wpspf_x_email_customer'])) ? intval($_POST['wpspf_x_email_customer']) : 0;
+        $wpspf_x_header_email_receipt   = sanitize_text_field($_POST['wpspf_x_header_email_receipt']);
+        $wpspf_x_footer_email_receipt  = sanitize_text_field($_POST['wpspf_x_footer_email_receipt']);
+        if ( get_option( 'wpspf_x_email_customer' ) !== false ) {
+            update_option( 'wpspf_x_email_customer', $wpspf_x_email_customer );
+        } else {             
+            add_option( 'wpspf_x_email_customer', $wpspf_x_email_customer , $deprecated, $autoload );
+        }
+
+        if ( get_option( 'wpspf_x_header_email_receipt' ) !== false ) {
+            update_option( 'wpspf_x_header_email_receipt', $wpspf_x_header_email_receipt );
+        } else {             
+            add_option( 'wpspf_x_header_email_receipt', $wpspf_x_header_email_receipt , $deprecated, $autoload );
+        }
+
+        if ( get_option( 'wpspf_x_footer_email_receipt' ) !== false ) {
+            update_option( 'wpspf_x_footer_email_receipt', $wpspf_x_footer_email_receipt );
+        } else {             
+            add_option( 'wpspf_x_footer_email_receipt', $wpspf_x_footer_email_receipt , $deprecated, $autoload );
+        }
+        //Customer email receipt end       
         
-        $deprecated = null;
-        $autoload = 'no';
         
         if ( get_option( 'wpspf_sitekey' ) !== false ) {
 
@@ -161,6 +185,30 @@ if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_n
         <td><input type="checkbox" name="wpspf_transactionmode" value="1" <?php if ( trim(get_option( 'wpspf_transactionmode' ))==1 ){ echo 'checked'; } ?> /><?php echo esc_html_e( 'Enable Authorize.Net sandbox (Live Mode if Unchecked)', 'wpspf_with_authorize.net' ); ?>
         <?php wp_nonce_field('wpspf_nonce_action', 'wpspf_nonce'); ?>   
         </td>
+        </tr>
+
+        <tr valign="top">
+        <th scope="row" colspan="2"><h1><?php echo esc_html_e( 'Customer Email Receipt Setting'); ?></h1></th>
+        </tr>
+
+        <tr valign="top">
+        <th scope="row"><?php echo esc_html_e( 'Enable Customer Email Receipt', 'wpspf_with_authorize.net' ); ?></th>
+        <td><select name="wpspf_x_email_customer" style="width:100%;">
+            <option value="">Select Anyone</option>
+            <option value="1" <?php if ( trim(get_option( 'wpspf_x_email_customer' ))==1 ){ echo 'selected="selected"'; } ?>>TRUE</option>
+            <option value="0" <?php if ( trim(get_option( 'wpspf_x_email_customer' ))==0 ){ echo 'selected="selected"'; } ?>>FALSE</option>
+        </select>   
+        </td>
+        </tr>
+        
+        <tr valign="top">
+        <th scope="row"><?php echo esc_html_e( 'Header Email Receipt'); ?></th>
+        <td><textarea name="wpspf_x_header_email_receipt" style="width:100%;"><?php echo esc_html_e(get_option( 'wpspf_x_header_email_receipt' )); ?></textarea></td>
+        </tr>
+        
+        <tr valign="top">
+        <th scope="row"><?php echo esc_html_e( 'Footer Email Receipt'); ?></th>
+        <td><textarea name="wpspf_x_footer_email_receipt" style="width:100%;"><?php echo esc_html_e(get_option( 'wpspf_x_footer_email_receipt' )); ?></textarea></td>
         </tr>
         
         <tr valign="top">

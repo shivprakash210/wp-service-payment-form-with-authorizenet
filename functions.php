@@ -777,11 +777,31 @@ function wpspf_service_payment_request_ajax(){
 				        $x_exp_date='';
 				    }
 
-				    if(trim(sanitize_text_field($postData['customer_email']))!=''){
-				        $customer_email = sanitize_text_field($postData['customer_email']);
+				    if(trim(sanitize_text_field($postData['email_address']))!=''){
+				        $customer_email = sanitize_text_field($postData['email_address']);
 				    }else{
 				        $customer_email = '';
 				    }
+
+				    if(trim(sanitize_text_field($postData['wpspf_x_cust_id']))!=''){
+				        $x_cust_id = sanitize_text_field($postData['wpspf_x_cust_id']);
+				    }else{
+				        $x_cust_id = mt_rand();
+				    }				    
+
+				    //Customer email receipt start
+				    $x_email_customer = ( intval(get_option( 'wpspf_x_email_customer' ))==1 ) ? 'TRUE' : 'FALSE';
+				    if(trim(sanitize_text_field(get_option( 'wpspf_x_header_email_receipt' )))!=''){
+				        $x_header_email_receipt = sanitize_text_field(get_option( 'wpspf_x_header_email_receipt' ));
+				    }else{
+				        $x_header_email_receipt = '';
+				    }
+				    if(trim(sanitize_text_field(get_option( 'wpspf_x_footer_email_receipt' )))!=''){
+				        $x_footer_email_receipt = sanitize_text_field(get_option( 'wpspf_x_footer_email_receipt' ));
+				    }else{
+				        $x_footer_email_receipt = '';
+				    }
+				    //Customer email receipt end
 
 
 				    $payload = array(
@@ -814,6 +834,9 @@ function wpspf_service_payment_request_ajax(){
 				        "x_country"             => sanitize_text_field($postData['service_country']),
 				        "x_phone"               => '',
 				        "x_email"               => $customer_email,
+				        "x_email_customer"		=> $x_email_customer,
+				        "x_header_email_receipt"=> $x_header_email_receipt,
+				        "x_footer_email_receipt"=> $x_footer_email_receipt,
 
 				        // Shipping Information
 				        "x_ship_to_first_name"  => sanitize_text_field($postData['customer_first_name']),
@@ -823,10 +846,10 @@ function wpspf_service_payment_request_ajax(){
 				        "x_ship_to_city"        => sanitize_text_field($postData['service_city']),
 				        "x_ship_to_country"     => sanitize_text_field($postData['service_country']),
 				        "x_ship_to_state"       => sanitize_text_field($postData['service_state']),
-				        "x_ship_to_zip"         => sanitize_text_field($postData['service_zip']),
+				        "x_ship_to_zip"         => sanitize_text_field($postData['service_zipcode']),
 
 				        // Some Customer Information
-				        "x_cust_id"             => mt_rand(),
+				        "x_cust_id"             => $x_cust_id,
 				        "x_customer_ip"         => $_SERVER['REMOTE_ADDR'],
 
 				    );

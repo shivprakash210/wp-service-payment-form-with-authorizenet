@@ -19,6 +19,8 @@ This allows you to add your own services lists and receive payments.
 After a making payment, your customers will be receive invoice from Authorize.net.
 If you will enable send invoice option from your Authorize.net merchant account.
 
+You can enable/disable send customer receipt setting from plugin setting option. 
+
 reCAPTCHA protects internet users from spam.
 
 List all payments in wp-admin and print each payment receipt.
@@ -28,6 +30,8 @@ List all payments in wp-admin and print each payment receipt.
 * Upload the directory '/wp-service-payment-form-with-authorizenet/' to your WP plugins directory and activate from the Dashboard of the main blog.
 * Configure the plugin at Dashboard > Service Payment.
 * And use [wpspf-paymentform] shortcode for display payment form.
+* Add additiona form fields at Dashboard > Service Payment > Form Fields Settings.
+* Form fields naming document at Dashboard > Service Payment > Settings document.
 
 
 == Frequently Asked Questions ==
@@ -45,3 +49,12 @@ Add google re-captcha
 Add dynamic form fields setting option
 List all payments
 Print payment receipt
+
+** V 2.0.1 **
+Fix php error
+
+** V 2.0.2 **
+Fix table create issue during activation of plugin.
+Add enable/disable send customer receipt features.
+Add feature to accept customer ID from customers.
+Add settings document page.

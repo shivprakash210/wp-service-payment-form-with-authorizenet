@@ -8,7 +8,7 @@
  * Plugin Name:       WP Service Payment Form With Authorize.net
  * Plugin URI:        https://github.com/shivprakash210/wp-service-payment-form-with-authorizenet
  * Description:       WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards using Authorize.net Gateway with captcha.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Author:            Shiv Prakash Tiwari
  * Author URI:        https://github.com/shivprakash210/
  * License:           GPL-2.0+
@@ -46,9 +46,9 @@ function wpspf_on_activation()
     $sql_form_fields_table = "CREATE TABLE $form_fields_table (
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `form_id` int(11) NOT NULL DEFAULT '1',
-              `field_name` varchar(250) NOT NULL,
+              `field_name` varchar(150) NOT NULL,
               `field_position` int(11) NOT NULL DEFAULT '100',
-              `field_other_attributes` json NOT NULL,
+              `field_other_attributes` text NOT NULL,
               PRIMARY KEY (`id`),
               UNIQUE KEY `form_id` (`form_id`,`field_name`)
         ) $charset_collate;"; 
@@ -142,6 +142,7 @@ function wpspf_plugin_create_menu() {
     add_action( 'admin_init', 'register_wpspf_plugin_settings' );
     add_submenu_page( 'wpspf-plugin-settings-page', 'All Payments', 'All Payments', 'manage_options', 'wpspf-all-payments', 'wpspf_all_payments');
     add_submenu_page( 'wpspf-plugin-settings-page', 'Form Fields Settings', 'Form Fields Settings', 'manage_options', 'wpspf-form-settings', 'wpspf_form_setings');
+    add_submenu_page( 'wpspf-plugin-settings-page', 'Settings Document', 'Settings Document', 'manage_options', 'wpspf-settings-document', 'wpspf_setings_document');
   
 }
 
@@ -188,4 +189,10 @@ function register_wpspf_plugin_settings() {
 function wpspf_plugin_settings_page() {
     wpspf_donate();
     require_once PLUGIN_DIR. 'admin/settings.php';
+}
+
+//setting document
+function wpspf_setings_document(){
+  wpspf_donate();
+    require_once PLUGIN_DIR. 'admin/settings-document.php';
 }
