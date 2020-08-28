@@ -939,7 +939,7 @@ function wpspf_service_payment_request_ajax(){
 						"x_method"              => "CC",
 						);
 					}
-
+					$payload= array_merge($payload1, $payload2);
 
 				    // Send this payload to Authorize.net for processing
 				    $response = wp_remote_post( $environment_url, array(
