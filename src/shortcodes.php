@@ -7,6 +7,8 @@ function wpspf_paymentform(){
         <form method="post" id="wpspf_form" onsubmit="return wpspfCheckGrecaptcha();" name="payment" enctype="multipart/form-data" action="">            
         <table id="wc-authorizenet_lightweight-cc-form" class="wc-credit-card-form wc-payment-form">';
     $formFields = wpspf_get_form_fields();
+        //override the form fields
+        $formFields = apply_filters( 'wpspf_frontend_form_fields', $formFields);
     if(!empty($formFields) && count($formFields)>0){
         foreach($formFields as $formField){
             $fieldAttributes = json_decode($formField->field_other_attributes);

@@ -1,4 +1,9 @@
 <?php
+function load_scripts(){
+    wp_enqueue_script('wpspf-service-form', plugin_dir_url(__FILE__) . 'js/wpspf-service-form.js');
+    wp_localize_script('wpspf-service-form', 'wpspf_vars', array('wpspfnet_enable_check' => get_option('wpspfnet_enable_check') ));
+}
+
 function wpspf_get_form_field_ajax(){	
 	if(!empty($_POST['action']) && !empty($_POST['field_type']) && $_POST['action']==='wpspf_get_form_field'){
 		$choice = $_POST['field_type'];
@@ -657,6 +662,11 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
 	                $fieldHtml .='</td>';
 					break;
+					case 'label':
+						$fieldHtml .='<td>';
+						$fieldHtml .='<input type="text" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'"  value="'.$fieldAttributes->wpspf_input_field_default_value.'" readonly="true">';
+						$fieldHtml .='</td>';
+						break;
 				case 'date':
 					$fieldHtml .='<td>';
 	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
@@ -677,32 +687,86 @@ function wpspf_get_paymentgateway_field_view(){
 	$fieldHtml = '';
 	if(get_option('wpspfnet_enable')==1){
 		$fieldHtml .= '<tr><th>Payment Method<span class="required">*</span></th><td><select name="paymentmethod" id="paymentmethod" required="required" class="form-field">
-	                    <option value="">Select any one</option>
-	                    <option value="VISA">VISA</option>
+						<option value="">Select any one</option>';
+
+		if(get_option('wpspfnet_enable_check')==1){
+			$fieldHtml .='<option value="">------- Credit/Debit Cards -------</option>';
+		}
+
+		$fieldHtml .= '<option value="VISA">VISA</option>
 	                    <option value="MasterCard">MasterCard</option>
 	                    <option value="AMEX">AMEX</option>
-	                    <option value="Discover">Discover</option>
-	                    </select></td></tr>';
+						<option value="Discover">Discover</option>';
+
+		if(get_option('wpspfnet_enable_check')==1){
+			$fieldHtml .='<option value="">---- Checking/Savings Account ----</option>
+						<option value="CHECKING">Checking Account</option>
+						<option value="SAVINGS">Savings Account</option>';
+		}
+		$fieldHtml .= '</select></td></tr>';
 	            
-	    $fieldHtml .= '<tr><th>Credit Card Number<span class="required">*</span></th><td><input id="authorizenet_lightweight-card-number"';
+	    $fieldHtml .= '<tr id="authorizenet_lightweight-card-numberrow"><th>Credit Card Number<span class="required">*</span></th><td><input id="authorizenet_lightweight-card-number"';
 	    if(isset($_POST['wpspf_authorizenet_card-number'])){
 	    	$fieldHtml .= ' value="'.$_POST['wpspf_authorizenet_card-number'].'"';
 		}
 	    $fieldHtml .= ' class="form-field"   maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="wpspf_authorizenet_card-number" type="text" required="required"></td>
 	    </tr>';
-	    $fieldHtml .= '<tr><th>Expiration Date (MM/YY)<span class="required">*</span></th>
+	    $fieldHtml .= '<tr id="authorizenet_lightweight-card-expiryrow"><th>Expiration Date (MM/YY)<span class="required">*</span></th>
 	        <td><input id="authorizenet_lightweight-card-expiry" class="form-field" maxlength="5"  autocomplete="off" placeholder="MM / YY" name="wpspf_authorizenet_card-expiry"';
 	    if(isset($_POST['wpspf_authorizenet_card-expiry'])){ 
 	    	$fieldHtml .= ' value="'.$_POST['wpspf_authorizenet_card-expiry'].'"'; 
 		}
 	    $fieldHtml .= ' type="text" required="required"></td></tr>';
 
-	    $fieldHtml .= '<tr><th>Security Code<span class="required">*</span></th>
+	    $fieldHtml .= '<tr id="authorizenet_lightweight-card-cvcrow"><th>Security Code<span class="required">*</span></th>
 	    <td><input id="authorizenet_lightweight-card-cvc" class="form-field" autocomplete="off" placeholder="CVC" name="wpspf_authorizenet_card-cvc"';
 	    if(isset($_POST['wpspf_authorizenet_card-cvc'])){
 		    $fieldHtml .=' value="'.$_POST['wpspf_authorizenet_card-cvc'].'"';
 		}
-	    $fieldHtml .=' type="text" required="required"></td></tr>';
+		$fieldHtml .=' type="text" required="required"></td></tr>';
+		
+		//Bank Logic Begin
+		if(get_option('wpspfnet_enable_check')==1){
+
+			//Name on Account
+			$fieldHtml .= '<tr id="authorizenet_name-on-accountrow"><th>Name on Account<span class="required">*</span></th>
+			<td><input id="authorizenet_name-on-account" class="form-field" maxlength="50" autocomplete="off" placeholder="Full Name on Account" name="wpspf_authorizenet_name-on-account"';
+			if(isset($_POST['wpspf_authorizenet_name-on-account'])){ 
+				$fieldHtml .= 'value="' .$_POST['wpspf_authorizenet_name-on-account'].'"'; 
+			}
+			$fieldHtml .= ' type="text" required="required"></td></tr>';
+
+			//Routing Number
+			$fieldHtml .= '<tr id="authorizenet_routing-numberrow"><th>Routing Number<span class="required">*</span></th>
+			<td><input id="authorizenet_routing-number" class="form-field" maxlength="9" autocomplete="off" placeholder="Enter Routing Number" name="wpspf_authorizenet_routing-number"';
+			if(isset($_POST['wpspf_authorizenet_routing-number'])){ 
+				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_routing-number'].'"';  
+			}
+			$fieldHtml .= ' type="text" required="required"></td></tr>';
+		
+			//Account Number
+			$fieldHtml .= '<tr id="authorizenet_account-numberrow"><th>Account Number<span class="required">*</span></th>
+			<td><input id="authorizenet_account-number" class="form-field" maxlength="17" autocomplete="off" placeholder="Enter Account Number" name="wpspf_authorizenet_account-number"';
+		 	if(isset($_POST['wpspf_authorizenet_account-number'])){
+				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_account-number'].'"';
+		 	}
+			$fieldHtml .=' type="text" required="required"></td></tr>';
+
+			//Bank Name
+			$fieldHtml .= '<tr id="authorizenet_bank-namerow"><th>Bank Name<span class="required">*</span></th>
+			<td><input id="authorizenet_bank-name" class="form-field" maxlength="50" autocomplete="off" placeholder="Enter Bank Name" name="wpspf_authorizenet_bank-name"';
+			if(isset($_POST['wpspf_authorizenet_bank-name'])){ 
+				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_bank-name'].'"';
+				}
+			$fieldHtml .=' type="text" required="required"></td></tr>';
+		
+			$fieldHtml .='<tr id="check-imagerow"><td></td><td style="padding: 10px;"><IMG id="check-image" src="' . plugin_dir_url(__FILE__) . 'img/personal-check.jpg" border = 0 alt="Check Routing and Account Number Location" /></td></tr>';
+
+
+
+		//KMP Bank End
+		}
+
     }
 
     $fieldHtml .='<tr><td><input type="hidden" id="spGoogleCaptchaRes" name="spGoogleCaptchaRes" value="" required="required"></td><td><div id="spGoogleCaptcha"></div></td></tr>';
@@ -801,58 +865,81 @@ function wpspf_service_payment_request_ajax(){
 				    }else{
 				        $x_footer_email_receipt = '';
 				    }
-				    //Customer email receipt end
+					//Customer email receipt end
+					$postData = apply_filters( 'wpspf_payment_form_post_data', $postData);
 
+					//Logic to process CC or Check
 
-				    $payload = array(
-				        // Authorize.net Credentials and API Info
-				        "x_tran_key"            => esc_attr( get_option('wpspf_transactionkey') ),
-				        "x_login"               => esc_attr( get_option('wpspf_apiloginid')),
-				        "x_version"             => "3.1",
-				        // Order total
-				        "x_amount"              => floatval($postData['payment_amount']),
-				        // Credit Card Information              
-				        "x_card_num"            => $wpspf_card_number,
-				        "x_card_code"           => $wpspf_cvc,
-				        "x_exp_date"            => $x_exp_date,
-				        "x_type"                => 'AUTH_CAPTURE',
-				        "x_invoice_num"         => str_replace( "#", "", sanitize_text_field($postData['invoice_number'])),
-				        "x_test_request"        => $environment,
-				        "x_delim_char"          => '|',
-				        "x_encap_char"          => '',
-				        "x_delim_data"          => "TRUE",
-				        "x_relay_response"      => "FALSE",
-				        "x_method"              => "CC",
+						
+					
+					$payload1 = array(
+						// Authorize.net Credentials and API Info
+						"x_tran_key"            => esc_attr( get_option('wpspf_transactionkey') ),
+						"x_login"               => esc_attr( get_option('wpspf_apiloginid')),
+						"x_version"             => "3.1",
+						// Order total
+						"x_amount"              => floatval($postData['payment_amount']),
+						
+						"x_type"                => 'AUTH_CAPTURE',
+						"x_invoice_num"         => str_replace( "#", "", sanitize_text_field($postData['invoice_number'])),
+						"x_test_request"        => $environment,
+						"x_delim_char"          => '|',
+						"x_encap_char"          => '',
+						"x_delim_data"          => "TRUE",
+						"x_relay_response"      => "FALSE",
+					
+						// Billing Information
+						"x_first_name"          => sanitize_text_field($postData['customer_first_name']),
+						"x_last_name"           => sanitize_text_field($postData['customer_last_name']),
+						"x_address"             => (isset($postData['service_address'])) ? sanitize_text_field($postData['service_address']) : '',
+						"x_city"                => sanitize_text_field($postData['service_city']),
+						"x_state"               => sanitize_text_field($postData['service_state']),
+						"x_zip"                 => sanitize_text_field($postData['service_zipcode']),
+						"x_country"             => sanitize_text_field($postData['service_country']),
+						"x_phone"               => '',
+						"x_email"               => $customer_email,
+						"x_email_customer"		=> $x_email_customer,
+						"x_header_email_receipt"=> $x_header_email_receipt,
+						"x_footer_email_receipt"=> $x_footer_email_receipt,
 
-				        // Billing Information
-				        "x_first_name"          => sanitize_text_field($postData['customer_first_name']),
-				        "x_last_name"           => sanitize_text_field($postData['customer_last_name']),
-				        "x_address"             => (isset($postData['service_address'])) ? sanitize_text_field($postData['service_address']) : '',
-				        "x_city"                => sanitize_text_field($postData['service_city']),
-				        "x_state"               => sanitize_text_field($postData['service_state']),
-				        "x_zip"                 => sanitize_text_field($postData['service_zipcode']),
-				        "x_country"             => sanitize_text_field($postData['service_country']),
-				        "x_phone"               => '',
-				        "x_email"               => $customer_email,
-				        "x_email_customer"		=> $x_email_customer,
-				        "x_header_email_receipt"=> $x_header_email_receipt,
-				        "x_footer_email_receipt"=> $x_footer_email_receipt,
+						// Shipping Information
+						"x_ship_to_first_name"  => sanitize_text_field($postData['customer_first_name']),
+						"x_ship_to_last_name"   => sanitize_text_field($postData['customer_last_name']),
+						"x_ship_to_company"     => '',
+						"x_ship_to_address"     => (isset($postData['service_address'])) ? sanitize_text_field($postData['service_address']) : '',
+						"x_ship_to_city"        => sanitize_text_field($postData['service_city']),
+						"x_ship_to_country"     => sanitize_text_field($postData['service_country']),
+						"x_ship_to_state"       => sanitize_text_field($postData['service_state']),
+						"x_ship_to_zip"         => sanitize_text_field($postData['service_zipcode']),
 
-				        // Shipping Information
-				        "x_ship_to_first_name"  => sanitize_text_field($postData['customer_first_name']),
-				        "x_ship_to_last_name"   => sanitize_text_field($postData['customer_last_name']),
-				        "x_ship_to_company"     => '',
-				        "x_ship_to_address"     => (isset($postData['service_address'])) ? sanitize_text_field($postData['service_address']) : '',
-				        "x_ship_to_city"        => sanitize_text_field($postData['service_city']),
-				        "x_ship_to_country"     => sanitize_text_field($postData['service_country']),
-				        "x_ship_to_state"       => sanitize_text_field($postData['service_state']),
-				        "x_ship_to_zip"         => sanitize_text_field($postData['service_zipcode']),
+						// Some Customer Information
+						"x_cust_id"             => $x_cust_id,
+						"x_customer_ip"         => $_SERVER['REMOTE_ADDR'],
 
-				        // Some Customer Information
-				        "x_cust_id"             => $x_cust_id,
-				        "x_customer_ip"         => $_SERVER['REMOTE_ADDR'],
-
-				    );
+					);
+			
+					//Bank Account
+					if ($postData['paymentmethod'] =='CHECKING' || $postData['paymentmethod'] == 'SAVINGS'){
+						// Bank Account Information Information	
+						$payload2= array(	
+						"x_bank_aba_code"		=> sanitize_text_field($postData['wpspf_authorizenet_routing-number']),
+						"x_bank_acct_num"		=> sanitize_text_field($postData['wpspf_authorizenet_account-number']),
+						"x_bank_acct_type"		=> sanitize_text_field($postData['paymentmethod']),
+						"x_echeck_type"			=> 'WEB',
+						"x_recurring_billing"	=> 'NO',
+						"x_bank_name"			=> sanitize_text_field($postData['wpspf_authorizenet_bank-name']),
+						"x_bank_acct_name"		=> sanitize_text_field($postData['wpspf_authorizenet_name-on-account']),
+						"x_method"              => "ECHECK",
+						);
+					}else{
+						$payload2= array(
+						"x_card_num"            => $wpspf_card_number,
+						"x_card_code"           => $wpspf_cvc,
+						"x_exp_date"            => $x_exp_date,
+						"x_method"              => "CC",
+						);
+					}
+					$payload= array_merge($payload1, $payload2);
 
 				    // Send this payload to Authorize.net for processing
 				    $response = wp_remote_post( $environment_url, array(
@@ -914,6 +1001,7 @@ function wpspf_service_payment_request_ajax(){
 }
 add_action('wp_ajax_wpspf_service_payment_request','wpspf_service_payment_request_ajax');
 add_action('wp_ajax_nopriv_wpspf_service_payment_request','wpspf_service_payment_request_ajax');
+add_action('wp_enqueue_scripts', 'load_scripts');
 
 //save payment form data
 function wpspf_save_service_payment_form_data_in_db($postData,$paymentStatus){

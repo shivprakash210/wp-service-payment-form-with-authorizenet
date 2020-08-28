@@ -7,8 +7,8 @@
  * @wordpress-plugin
  * Plugin Name:       WP Service Payment Form With Authorize.net
  * Plugin URI:        https://github.com/shivprakash210/wp-service-payment-form-with-authorizenet
- * Description:       WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards using Authorize.net Gateway with captcha.
- * Version:           2.0.2
+ * Description:       WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards and checks using Authorize.net Gateway with captcha.
+ * Version:           2.2.0
  * Author:            Shiv Prakash Tiwari
  * Author URI:        https://github.com/shivprakash210/
  * License:           GPL-2.0+
@@ -143,7 +143,6 @@ function wpspf_plugin_create_menu() {
     add_submenu_page( 'wpspf-plugin-settings-page', 'All Payments', 'All Payments', 'manage_options', 'wpspf-all-payments', 'wpspf_all_payments');
     add_submenu_page( 'wpspf-plugin-settings-page', 'Form Fields Settings', 'Form Fields Settings', 'manage_options', 'wpspf-form-settings', 'wpspf_form_setings');
     add_submenu_page( 'wpspf-plugin-settings-page', 'Settings Document', 'Settings Document', 'manage_options', 'wpspf-settings-document', 'wpspf_setings_document');
-  
 }
 
 //add js file
@@ -183,6 +182,7 @@ function register_wpspf_plugin_settings() {
     register_setting( 'wpspf-plugin-settings-group', 'wpspf_apiloginid' );
     register_setting( 'wpspf-plugin-settings-group', 'wpspf_transactionkey' );
     register_setting( 'wpspf-plugin-settings-group', 'wpspf_transactionmode' );
+    register_setting( 'wpspf-plugin-settings-group', 'wpspfnet_enable_check' );
 }
 
 //payment gateway settings
