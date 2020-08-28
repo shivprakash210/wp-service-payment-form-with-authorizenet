@@ -657,6 +657,11 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
 	                $fieldHtml .='</td>';
 					break;
+					case 'label':
+						$fieldHtml .='<td>';
+						$fieldHtml .='<input type="text" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'"  value="'.$fieldAttributes->wpspf_input_field_default_value.'" readonly="true">';
+						$fieldHtml .='</td>';
+						break;
 				case 'date':
 					$fieldHtml .='<td>';
 	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
