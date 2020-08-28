@@ -1,6 +1,8 @@
 <div class="wrap">
 <h3>Settings Document</h3>
 <p>Please use "[wpspf-paymentform]" shortcode for payment form.</p>
+<p>You can add or modify any fields using filter "wpspf_frontend_form_fields" </p>
+<p>You can modify form post data using filter "wpspf_payment_form_post_data" </p>
 <h4>Form fields name</h4>
 <table class="wp-list-table widefat fixed striped">
 	<tr>

@@ -1,9 +1,11 @@
 <?php
+
 if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_nonce_action')){
         $deprecated = null;
         $autoload = 'no';
         
         $wpspfnet_enable        = (!empty($_POST['wpspfnet_enable'])) ? intval($_POST['wpspfnet_enable']) : 0;
+        $wpspfnet_enable_check  = (!empty($_POST['wpspfnet_enable_check'])) ? intval($_POST['wpspfnet_enable_check']) : 0;
         $wpspf_apiloginid       = sanitize_text_field($_POST['wpspf_apiloginid']);
         $wpspf_transactionkey   = sanitize_text_field($_POST['wpspf_transactionkey']);
         $wpspf_transactionmode  = (!empty($_POST['wpspf_transactionmode'])) ? intval($_POST['wpspf_transactionmode']) : 0;
@@ -107,6 +109,15 @@ if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_n
             add_option( 'wpspfnet_enable', $wpspfnet_enable , $deprecated, $autoload );
         }
         
+        if ( get_option( 'wpspfnet_enable_check' ) !== false ) {
+
+            update_option( 'wpspfnet_enable_check', $wpspfnet_enable_check );
+
+        } else {
+             
+            add_option( 'wpspfnet_enable_check', $wpspfnet_enable_check , $deprecated, $autoload );
+        }
+
         if ( get_option( 'wpspf_transactionmode' ) !== false ) {
 
             update_option( 'wpspf_transactionmode', $wpspf_transactionmode );
@@ -168,6 +179,11 @@ if(isset($_POST['submit']) && wp_verify_nonce($_REQUEST['wpspf_nonce'], 'wpspf_n
         <tr valign="top">
         <th scope="row"><?php echo esc_html_e( 'Enable/Disable', 'wpspf_with_authorize.net' ); ?></th>
         <td><input type="checkbox" name="wpspfnet_enable" value="1" <?php if ( trim(get_option( 'wpspfnet_enable' ))==1 ){ echo 'checked'; } ?> /><?php echo esc_html_e( 'Enable Authorize.Net', 'wpspf_with_authorize.net' ); ?></td>
+        </tr>
+
+        <tr valign="top">
+        <th scope="row"><?php echo esc_html_e( 'Check Processing', 'wpspf_with_authorize.net' ); ?></th>
+        <td><input type="checkbox" name="wpspfnet_enable_check" value="1" <?php if ( trim(get_option( 'wpspfnet_enable_check' ))==1 ){ echo 'checked'; } ?> /><?php echo esc_html_e( 'Enable Check Processing', 'wpspf_with_authorize.net' ); ?></td>
         </tr>
          
         <tr valign="top">
