@@ -636,17 +636,29 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 					break;
 				case 'file':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';      
-	                $fieldHtml .='</td>';
+					$fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'"';
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}   
+	                $fieldHtml .='></td>';
 					break;
 				case 'textarea':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<textarea name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">'.$fieldAttributes->wpspf_input_field_default_value.'</textarea>';
+					$fieldHtml .='<textarea name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'"';
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}
+					$fieldHtml .= '>'.$fieldAttributes->wpspf_input_field_default_value.'</textarea>';
+
 	                $fieldHtml .='</td>';
 					break;
 				case 'select':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<select name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';
+					$fieldHtml .='<select name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'"';
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}
+					$fieldHtml .='>';
 	                $options = explode("|", $fieldAttributes->wpspf_input_field_options);
 	                   $fieldHtml .='<option value="">Select</option>';
 	                if(!empty($options)){
@@ -659,23 +671,32 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 					break;
 				case 'password':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
-	                $fieldHtml .='</td>';
+	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'"'; 
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}
+	                $fieldHtml .='></td>';	
 					break;
 					case 'label':
 						$fieldHtml .='<td>';
 						$fieldHtml .='<input type="text" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'"  value="'.$fieldAttributes->wpspf_input_field_default_value.'" readonly="true">';
-						$fieldHtml .='</td>';
+						$fieldHtml .='</td>';	
 						break;
 				case 'date':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';    
-	                $fieldHtml .='</td>';
+	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder. '"';    
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}
+	                $fieldHtml .='></td>';	
 					break;
 				default:
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" value="'.$fieldAttributes->wpspf_input_field_default_value.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';
-	                $fieldHtml .='</td>';					
+					$fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" value="'.$fieldAttributes->wpspf_input_field_default_value. '"';
+					if ($fieldAttributes->wpspf_input_field_is_required ==='true'){
+						$fieldHtml .=' required';
+					}
+	                $fieldHtml .='></td>';					
 					break;
 			}
 	$fieldHtml .='</tr>';
@@ -686,7 +707,7 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 function wpspf_get_paymentgateway_field_view(){
 	$fieldHtml = '';
 	if(get_option('wpspfnet_enable')==1){
-		$fieldHtml .= '<tr><th>Payment Method<span class="required">*</span></th><td><select name="paymentmethod" id="paymentmethod" required="required" class="form-field">
+		$fieldHtml .= '<tr><th>Payment Method<span class="required">*</span></th><td><select name="paymentmethod" id="paymentmethod" required class="form-field">
 						<option value="">Select any one</option>';
 
 		if(get_option('wpspfnet_enable_check')==1){
@@ -709,21 +730,21 @@ function wpspf_get_paymentgateway_field_view(){
 	    if(isset($_POST['wpspf_authorizenet_card-number'])){
 	    	$fieldHtml .= ' value="'.$_POST['wpspf_authorizenet_card-number'].'"';
 		}
-	    $fieldHtml .= ' class="form-field"   maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="wpspf_authorizenet_card-number" type="text" required="required"></td>
+	    $fieldHtml .= ' class="form-field"   maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="wpspf_authorizenet_card-number" type="text" required></td>
 	    </tr>';
 	    $fieldHtml .= '<tr id="authorizenet_lightweight-card-expiryrow"><th>Expiration Date (MM/YY)<span class="required">*</span></th>
 	        <td><input id="authorizenet_lightweight-card-expiry" class="form-field" maxlength="5"  autocomplete="off" placeholder="MM / YY" name="wpspf_authorizenet_card-expiry"';
 	    if(isset($_POST['wpspf_authorizenet_card-expiry'])){ 
 	    	$fieldHtml .= ' value="'.$_POST['wpspf_authorizenet_card-expiry'].'"'; 
 		}
-	    $fieldHtml .= ' type="text" required="required"></td></tr>';
+	    $fieldHtml .= ' type="text" required></td></tr>';
 
 	    $fieldHtml .= '<tr id="authorizenet_lightweight-card-cvcrow"><th>Security Code<span class="required">*</span></th>
 	    <td><input id="authorizenet_lightweight-card-cvc" class="form-field" autocomplete="off" placeholder="CVC" name="wpspf_authorizenet_card-cvc"';
 	    if(isset($_POST['wpspf_authorizenet_card-cvc'])){
 		    $fieldHtml .=' value="'.$_POST['wpspf_authorizenet_card-cvc'].'"';
 		}
-		$fieldHtml .=' type="text" required="required"></td></tr>';
+		$fieldHtml .=' type="text" required></td></tr>';
 		
 		//Bank Logic Begin
 		if(get_option('wpspfnet_enable_check')==1){
@@ -734,7 +755,7 @@ function wpspf_get_paymentgateway_field_view(){
 			if(isset($_POST['wpspf_authorizenet_name-on-account'])){ 
 				$fieldHtml .= 'value="' .$_POST['wpspf_authorizenet_name-on-account'].'"'; 
 			}
-			$fieldHtml .= ' type="text" required="required"></td></tr>';
+			$fieldHtml .= ' type="text" required></td></tr>';
 
 			//Routing Number
 			$fieldHtml .= '<tr id="authorizenet_routing-numberrow"><th>Routing Number<span class="required">*</span></th>
@@ -742,7 +763,7 @@ function wpspf_get_paymentgateway_field_view(){
 			if(isset($_POST['wpspf_authorizenet_routing-number'])){ 
 				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_routing-number'].'"';  
 			}
-			$fieldHtml .= ' type="text" required="required"></td></tr>';
+			$fieldHtml .= ' type="text" required></td></tr>';
 		
 			//Account Number
 			$fieldHtml .= '<tr id="authorizenet_account-numberrow"><th>Account Number<span class="required">*</span></th>
@@ -750,7 +771,7 @@ function wpspf_get_paymentgateway_field_view(){
 		 	if(isset($_POST['wpspf_authorizenet_account-number'])){
 				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_account-number'].'"';
 		 	}
-			$fieldHtml .=' type="text" required="required"></td></tr>';
+			$fieldHtml .=' type="text" required></td></tr>';
 
 			//Bank Name
 			$fieldHtml .= '<tr id="authorizenet_bank-namerow"><th>Bank Name<span class="required">*</span></th>
@@ -758,7 +779,7 @@ function wpspf_get_paymentgateway_field_view(){
 			if(isset($_POST['wpspf_authorizenet_bank-name'])){ 
 				$fieldHtml .= 'value="' . $_POST['wpspf_authorizenet_bank-name'].'"';
 				}
-			$fieldHtml .=' type="text" required="required"></td></tr>';
+			$fieldHtml .=' type="text" required></td></tr>';
 		
 			$fieldHtml .='<tr id="check-imagerow"><td></td><td style="padding: 10px;"><IMG id="check-image" src="' . plugin_dir_url(__FILE__) . 'img/personal-check.jpg" border = 0 alt="Check Routing and Account Number Location" /></td></tr>';
 
@@ -769,7 +790,7 @@ function wpspf_get_paymentgateway_field_view(){
 
     }
 
-    $fieldHtml .='<tr><td><input type="hidden" id="spGoogleCaptchaRes" name="spGoogleCaptchaRes" value="" required="required"></td><td><div id="spGoogleCaptcha"></div></td></tr>';
+    $fieldHtml .='<tr><td><input type="hidden" id="spGoogleCaptchaRes" name="spGoogleCaptchaRes" value="" required></td><td><div id="spGoogleCaptcha"></div></td></tr>';
 
     if(get_option('wpspfnet_enable')==1){
 	    $fieldHtml .='<tr><td></td><td style="text-align:right;padding: 10px;"><IMG src="//payments.intuit.com/payments/landing_pages/LB/default.jsp?c=VMAD&l=H&s=2&b=FFFFFF" width="235" height="35" border=0 alt="Credit Card Logos" /></td></tr>';
