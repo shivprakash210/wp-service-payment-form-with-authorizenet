@@ -135,7 +135,7 @@ class WPSPF_PAYMENT_Table extends WP_List_Table {
      * @return array An associative array containing all the bulk actions: 'slugs'=>'Visible Titles'
      **************************************************************************/
     function get_bulk_actions() {
-        $actions = array(
+        $actions = array('delete' => 'Delete'
         );
         return $actions;
     }
@@ -149,10 +149,23 @@ class WPSPF_PAYMENT_Table extends WP_List_Table {
      * @see $this->prepare_items()
      **************************************************************************/
     function process_bulk_action() {
-        
-        //Detect when a bulk action is being triggered...
-        if( 'delete'===$this->current_action() ) {
-            wp_die('Items deleted (or they would be if we had items to delete)!');
+        if(false === $this->current_action()) {
+            return;
+        }
+        if (!isset($_POST['wpspf_nonce']) || !wp_verify_nonce($_POST['wpspf_nonce'], 'wpspf_payments_nonce' )){
+            wp_die( 'Access denied.' );
+        }
+        if( 'delete' === $this->current_action() ) {
+            global $wpdb;
+            
+            $id_list = isset($_POST['wpspf_entry']) ? $_POST['wpspf_entry'] : false;
+            if($id_list){
+                $ids = implode(',', $id_list);
+                $wpspfPaymentEntryMetaTable = $wpdb->prefix.'wpspf_payment_entry_meta';
+                $wpspfPaymentEntryTable = $wpdb->prefix.'wpspf_payment_entry';
+                $wpdb->query("DELETE FROM $wpspfPaymentEntryMetaTable WHERE entry_id IN ($ids)");
+                $wpdb->query("DELETE FROM $wpspfPaymentEntryTable WHERE id IN ($ids)");
+            }
         }
         
     }
@@ -202,13 +215,11 @@ class WPSPF_PAYMENT_Table extends WP_List_Table {
          */
         $this->_column_headers = array($columns, $hidden, $sortable);
         
-        
         /**
          * Optional. You can handle your bulk actions however you see fit. In this
          * case, we'll handle them within our package just to keep things clean.
          */
         $this->process_bulk_action();
-        
         
         /**
          * Instead of querying a database, we're going to fetch the example data
@@ -222,7 +233,6 @@ class WPSPF_PAYMENT_Table extends WP_List_Table {
         global $wpdb;
         $wpspfPaymentEntryTable = $wpdb->prefix.'wpspf_payment_entry';
         $data = $wpdb->get_results("SELECT * FROM $wpspfPaymentEntryTable ORDER BY id DESC",ARRAY_A);
-        
         /**
          * This checks for sorting input and sorts the data in our array accordingly.
          * 
@@ -306,8 +316,9 @@ function wpspf_render_list_page(){
     <div class="wrap">        
         <div id="icon-users" class="icon32"><br/></div>
         <h1 class="wp-heading-inline">All Payments</h1>
-        <form id="wpspf-entry-filter" method="get">
+        <form id="wpspf-entry-filter" method="post">
             <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+            <?php echo wp_nonce_field('wpspf_payments_nonce', 'wpspf_nonce'); ?>
             <?php $paymentLists->display() ?>
         </form>        
     </div>
