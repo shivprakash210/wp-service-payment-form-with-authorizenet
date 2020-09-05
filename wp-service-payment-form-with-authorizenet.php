@@ -159,6 +159,12 @@ function wpspf_adding_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'wpspf_adding_styles' );   
 
+//add admin js
+function wpspf_admin_enqueue_scripts() {
+    wp_enqueue_script('wpspf_service_admin', plugins_url('js/wpspf-service-admin.js', __FILE__), array('jquery'), '', true);
+}
+add_action( 'admin_enqueue_scripts', 'wpspf_admin_enqueue_scripts' );
+
 //form setting
 function wpspf_form_setings(){
     wpspf_donate();
@@ -168,7 +174,7 @@ function wpspf_form_setings(){
 //payment entry listing
 function wpspf_all_payments(){
     wpspf_donate();
-    if(isset($_GET['action']) && isset($_GET['wpspf_entry'])){
+    if(isset($_GET['action']) && $_GET['action'] === 'details'){
         require_once PLUGIN_DIR. 'src/wpspf-payment-details.php';
     }else{
         require_once PLUGIN_DIR. 'src/wpspf-payments-list.php';
