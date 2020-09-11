@@ -832,7 +832,7 @@ function wpspf_service_payment_request_ajax(){
 				    }else{ $wpspf_card_number =''; }
 
 				    if(isset($postData['wpspf_authorizenet_card-cvc']) && $postData['wpspf_authorizenet_card-cvc']!=''){
-				            $wpspf_cvc = intval($postData['wpspf_authorizenet_card-cvc']);
+				            $wpspf_cvc = $postData['wpspf_authorizenet_card-cvc'];
 				    }else{ $wpspf_cvc =''; }
 
 				    if(isset($postData['wpspf_authorizenet_card-expiry'])){
@@ -896,7 +896,7 @@ function wpspf_service_payment_request_ajax(){
 						"x_state"               => sanitize_text_field($postData['service_state']),
 						"x_zip"                 => sanitize_text_field($postData['service_zipcode']),
 						"x_country"             => sanitize_text_field($postData['service_country']),
-						"x_phone"               => '',
+						"x_phone"               => (isset($postData['phone'])) ? sanitize_text_field($postData['phone']) : '',,
 						"x_email"               => $customer_email,
 						"x_email_customer"		=> $x_email_customer,
 						"x_header_email_receipt"=> $x_header_email_receipt,
