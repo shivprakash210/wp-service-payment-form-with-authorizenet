@@ -217,6 +217,10 @@ function wpspf_get_form_field_ajax(){
 			<div class="col"><input type="text" name="wpspf_input_field_default_value" class="field" id="wpspf_input_field_default_value"></div>
 		</div>';
 		$fieldHtml .='<div class="row">
+			<div class="col">Field MaxLength:</div>
+			<div class="col"><input type="number" name="wpspf_input_field_maxlength" class="field" id="wpspf_input_field_maxlength"></div>
+		</div>';
+		$fieldHtml .='<div class="row">
 			<div class="col">Field position in form:</div>
 			<div class="col"><input type="number" min="1" max="100" name="wpspf_input_field_position" class="field" id="wpspf_input_field_position"></div>
 		</div>';
@@ -610,6 +614,7 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
     	$fieldHtml .='<span class="required">*</span>';
     }                
     $fieldHtml .='</th>';
+    $maxLength = (property_exists($fieldAttributes, 'wpspf_input_field_maxlength') && trim($fieldAttributes->wpspf_input_field_maxlength) !== '') ? 'maxlength="' . intval($fieldAttributes->wpspf_input_field_maxlength) . '"': '' ;
 	$case = $fieldAttributes->wpspf_field_type;
 			switch ($case) {
 				case 'checkbox':
@@ -641,7 +646,7 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 					break;
 				case 'textarea':
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<textarea name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">'.$fieldAttributes->wpspf_input_field_default_value.'</textarea>';
+	                $fieldHtml .='<textarea name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'"'.$maxLength.'>'.$fieldAttributes->wpspf_input_field_default_value.'</textarea>';
 	                $fieldHtml .='</td>';
 					break;
 				case 'select':
@@ -674,7 +679,7 @@ function wpspf_get_dynamic_form_field_view($fieldAttributes){
 					break;
 				default:
 					$fieldHtml .='<td>';
-	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" value="'.$fieldAttributes->wpspf_input_field_default_value.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'">';
+	                $fieldHtml .='<input type="'.$case.'" name="'.$fieldAttributes->wpspf_input_field_name.'" id="'.$fieldAttributes->wpspf_input_field_id.'" class="form-field '.$fieldAttributes->wpspf_input_field_class.'" placeholder="'.$fieldAttributes->wpspf_input_field_placeholder.'" value="'.$fieldAttributes->wpspf_input_field_default_value.'" required="'.$fieldAttributes->wpspf_input_field_is_required.'"'.$maxLength.'>';
 	                $fieldHtml .='</td>';					
 					break;
 			}
@@ -847,7 +852,7 @@ function wpspf_service_payment_request_ajax(){
 				        $customer_email = '';
 				    }
 
-				    if(trim(sanitize_text_field($postData['wpspf_x_cust_id']))!=''){
+				    if(isset($postData['wpspf_x_cust_id']) &&  trim(sanitize_text_field($postData['wpspf_x_cust_id']))!=''){
 				        $x_cust_id = sanitize_text_field($postData['wpspf_x_cust_id']);
 				    }else{
 				        $x_cust_id = mt_rand();
@@ -881,7 +886,8 @@ function wpspf_service_payment_request_ajax(){
 						"x_amount"              => floatval($postData['payment_amount']),
 						
 						"x_type"                => 'AUTH_CAPTURE',
-						"x_invoice_num"         => str_replace( "#", "", sanitize_text_field($postData['invoice_number'])),
+						"x_invoice_num"         => (isset( $postData['invoice_number'] )) ? str_replace( "#", "", sanitize_text_field($postData['invoice_number'])) : '',
+						"x_description"         => (isset( $postData['description'] )) ? sanitize_text_field($postData['description']) : '',
 						"x_test_request"        => $environment,
 						"x_delim_char"          => '|',
 						"x_encap_char"          => '',
@@ -891,12 +897,13 @@ function wpspf_service_payment_request_ajax(){
 						// Billing Information
 						"x_first_name"          => sanitize_text_field($postData['customer_first_name']),
 						"x_last_name"           => sanitize_text_field($postData['customer_last_name']),
+						"x_company"             => (isset($postData['company_name'])) ? sanitize_text_field($postData['company_name']) : '',
 						"x_address"             => (isset($postData['service_address'])) ? sanitize_text_field($postData['service_address']) : '',
 						"x_city"                => sanitize_text_field($postData['service_city']),
 						"x_state"               => sanitize_text_field($postData['service_state']),
 						"x_zip"                 => sanitize_text_field($postData['service_zipcode']),
 						"x_country"             => sanitize_text_field($postData['service_country']),
-						"x_phone"               => (isset($postData['phone'])) ? sanitize_text_field($postData['phone']) : '',,
+						"x_phone"               => (isset($postData['phone'])) ? sanitize_text_field($postData['phone']) : '',
 						"x_email"               => $customer_email,
 						"x_email_customer"		=> $x_email_customer,
 						"x_header_email_receipt"=> $x_header_email_receipt,
