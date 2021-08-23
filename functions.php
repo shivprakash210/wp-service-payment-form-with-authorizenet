@@ -883,7 +883,7 @@ function wpspf_service_payment_request_ajax(){
 						"x_login"               => esc_attr( get_option('wpspf_apiloginid')),
 						"x_version"             => "3.1",
 						// Order total
-						"x_amount"              => floatval($postData['payment_amount']),
+						"x_amount"              => floatval(str_replace("$","",str_replace(",","",$postData['payment_amount']))),
 						
 						"x_type"                => 'AUTH_CAPTURE',
 						"x_invoice_num"         => (isset( $postData['invoice_number'] )) ? str_replace( "#", "", sanitize_text_field($postData['invoice_number'])) : '',
