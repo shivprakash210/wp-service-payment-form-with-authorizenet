@@ -3,7 +3,7 @@ Contributors: shivtiwari
 Donate link:  
 Tags: Wordpress, WooCommerce, e-Commerce, Captcha, Authorize.net, Form
 Requires at least: 3.0.1
-Tested up to: 5.4.1
+Tested up to: 5.8
 Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -58,3 +58,18 @@ Fix table create issue during activation of plugin.
 Add enable/disable send customer receipt features.
 Add feature to accept customer ID from customers.
 Add settings document page.
+
+** V 2.2.0 **
+Add ACH Payment Method.
+
+** V 2.2.1 **
+Fixed Charge twice issue.
+
+** V 2.2.2 **
+Form field required issue fixed.
+
+** V 2.2.3 **
+Tested on wordpress 5.8
+
+** V 2.2.4 **
+Plugin not delete issue fixed.

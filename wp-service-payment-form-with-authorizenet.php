@@ -8,7 +8,7 @@
  * Plugin Name:       WP Service Payment Form With Authorize.net
  * Plugin URI:        https://github.com/shivprakash210/wp-service-payment-form-with-authorizenet
  * Description:       WP Service Payment Form With Authorize.net allows to accept payments from credit/debit cards and checks using Authorize.net Gateway with captcha.
- * Version:           2.2.0
+ * Version:           2.2.4
  * Author:            Shiv Prakash Tiwari
  * Author URI:        https://github.com/shivprakash210/
  * License:           GPL-2.0+
@@ -123,7 +123,6 @@ function wpspf_on_uninstall()
     $dropSql = "DROP TABLE IF EXISTS $form_fields_table";
     $wpdb->query($dropSql);  
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    check_admin_referer( 'bulk-plugins' );
     if ( __FILE__ != WP_UNINSTALL_PLUGIN )
         return;
 }
